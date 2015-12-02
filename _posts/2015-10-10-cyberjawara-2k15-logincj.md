@@ -13,7 +13,8 @@ Tulisan singkat ini akan membahas soal "LoginCJ" pada cyberjawara 2015. Soal ter
 
 * Gunakan perintah "strings" untuk melihat printable string pada aplikasi tersebut. Karena aplikasi tersebut dibuat menggunakan Visual Basic, maka string yang terdapat pada aplikasi tersebut menggunakan tipe karakter unicode 16-bit. Gunakan opsi "-e l" pada perintah "strings" untuk menampilkan printable string yang menggunakan format unicode 16-bit seperti ini:
 
-```% strings -e l LoginCJ.exe
+```
+% strings -e l LoginCJ.exe
 I*\AC:\Program Files (x86)\Microsoft Visual Studio\VB98\cjlogin\Project2.vbp
 J4w4r4cyb3rrrr
 2015j4w4racYb3RR
@@ -50,7 +51,8 @@ LoginCJ.exe
 
 * Selain menggunakan cara di atas, Anda juga dapat menggunakan "binwalk" dan "dd" untuk mengekstrak gambar yang berisi flag tersebut. Jalankan "binwalk" seperti ini:
 
-```% binwalk LoginCJ.exe
+```
+% binwalk LoginCJ.exe
 DECIMAL       HEXADECIMAL     DESCRIPTION
 --------------------------------------------------------------------------------
 0             0x0             Microsoft executable, portable (PE)
@@ -63,7 +65,8 @@ DECIMAL       HEXADECIMAL     DESCRIPTION
 
 * Bisa terlihat bahwa pada executable "LoginCJ" terdapat gambar dalam format JPEG yang ukurannya 214834 byte (714848 - 500014). Offset dimana file tersebut berada adalah 500014 hingga 714848. Selanjutnya, Anda dapat menggunakan perintah "dd" untuk mengekstrak gambar tersebut seperti ini:
 
-```% dd if=LoginCJ.exe of=img.jpg bs=1 skip=500014 count=$((714848 - 500014))
+```
+% dd if=LoginCJ.exe of=img.jpg bs=1 skip=500014 count=$((714848 - 500014))
 214834+0 records in
 214834+0 records out
 214834 bytes (215 kB) copied, 0.533164 s, 403 kB/s
@@ -71,7 +74,8 @@ DECIMAL       HEXADECIMAL     DESCRIPTION
 
 * Bisa terlihat bahwa gambar tersebut berhasil diekstrak:
 
-```% file img.jpg
+```
+% file img.jpg
 img.jpg: JPEG image data, JFIF standard 1.01, aspect ratio, density 1x1, segment length 16, baseline, precision 8, 703x703, frames 3
 ```
 

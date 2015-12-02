@@ -11,14 +11,16 @@ Tulisan singkat ini akan membahas soal "CJ15" pada cyberjawara 2015. Soal terseb
 ---
 * Berikut ini adalah informasi dari file "CJ15":
 
-```% file cj15
+```
+% file cj15
 cj15: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamically linked, \
 interpreter /lib/ld-linux.so.2, for GNU/Linux 2.6.32, BuildID[sha1]=134d6b254d6198d5b012f7b76ecb32e9b16c2cb3, stripped
 ```
 
 * Dan jika melihat printable string pada aplikasi tersebut, maka akan diperoleh informasi berikut ini:
 
-```% strings cj15
+```
+% strings cj15
 /lib/ld-linux.so.2
 Mk%Ma
 libc.so.6
@@ -44,7 +46,8 @@ Cemungudhhh Ahh
 
 * Load aplikasi tersebut menggunakan radare2 dan gunakan perintah "aaa" untuk melakukan analisis seperti ini:
 
-```% r2 cj15
+```
+% r2 cj15
  -- Enable ascii-art jump lines in disassembly by setting 'e asm.lines=true'. asm.linesout and asm.linestyle may interest you as well
 [0x08048390]> aaa
 ```
@@ -71,7 +74,8 @@ Cemungudhhh Ahh
 
 * Disassemble fungsi main pada aplikasi tersebut dengan menggunakan perintah "pdf @ main":
 
-```[0x08048390]> pdf @ main
+```
+[0x08048390]> pdf @ main
 / (fcn) main 271
 |           ; arg int arg_8        @ ebp+0x20
 |           ; arg int arg_8_2      @ ebp+0x22
@@ -181,7 +185,8 @@ Cemungudhhh Ahh
 
 * Pada bagian awal fungsi main, bisa terlihat bahwa ada beberapa karakter terenkripsi yang disimpan pada stack. Dan pada alamat "0x0804860a" terdapat pemanggilan fungsi "fcn.080484b3" yang tugasnya untuk melakukan enkripsi terhadap password yang dimasukkan oleh user. Setelah melakukan enkripsi terhadap password yang dimasukkan oleh user, maka fungsi "fcn.08048515" akan melakukan perbandingan antara password user yang telah terenkripsi dengan password yang benar. Jika passwordnya tidak sesuai, maka "JUMP" pada alamat "0x804863b" akan dieksekusi dan dilanjutkan dengan menampilkan pesan kesalahan. Namun jika benar, maka password yang dimasukkan oleh user dan password yang benar akan diperiksa sekali lagi. Selanjutnya, kita akan melihat fungsi yang melakukan enkripsi terhadap password yang dimasukkan oleh user, yaitu fungsi "call fcn.080484b3":
 
-```[0x08048390]> pdf @ fcn.080484b3
+```
+[0x08048390]> pdf @ fcn.080484b3
 / (fcn) fcn.080484b3 98
 |           ; arg int arg_2        @ ebp+0x8
 |           ; var int local_0_1    @ ebp-0x1
@@ -228,13 +233,15 @@ Cemungudhhh Ahh
 
 * Bisa terlihat bahwa instruksi pada alamat "0x080484f4" melakukan operasi XOR terhadap setiap karakter pada password yang diberikan oleh user dengan nilai 0x16 heksadesimal (22 desimal). Dari sini, kita dapat melakukan dekripsi terhadap password yang benar, yaitu dengan melakukan operasi XOR setiap karakter password yang benar dengan nilai 0x16 heksadesimal. Jika menggunakan python, caranya seperti ini:
 
-```% python -c "print ''.join([chr(x ^ 0x16) for x in [0x79,0x5b,0x23,0x5a,0x22,0x7b,0x73,0x42,0x20,0x77,0x78,0x42,0x25,0x78,0x2f]])"
+```
+% python -c "print ''.join([chr(x ^ 0x16) for x in [0x79,0x5b,0x23,0x5a,0x22,0x7b,0x73,0x42,0x20,0x77,0x78,0x42,0x25,0x78,0x2f]])"
 oM5L4meT6anT3n9
 ```
 
 * Dari langkah di atas, bisa terlihat, bahwa password yang benar adalah "oM5L4meT6anT3n9". Untuk mengujinya, jalankan aplikasi "CJ15" dengan menggunakan password tersebut:
 
-```% ./cj15 oM5L4meT6anT3n9
+```
+% ./cj15 oM5L4meT6anT3n9
 Yuhuuuu Ketemu Kang
 Clue : 22
 ```
